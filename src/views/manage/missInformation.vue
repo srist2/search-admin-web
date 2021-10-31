@@ -5,15 +5,6 @@
       style="width: 100%">
       <el-table-column type="expand">
         <template slot-scope="props">
-          <el-descriptions title="失踪者信息">
-            <el-descriptions-item label="姓名">{{props.row.infoName}}</el-descriptions-item>
-            <el-descriptions-item label="手机号">18100000000</el-descriptions-item>
-            <el-descriptions-item label="居住地">苏州市</el-descriptions-item>
-            <el-descriptions-item label="备注">
-              <el-tag size="small">学校</el-tag>
-            </el-descriptions-item>
-            <el-descriptions-item label="联系地址">江苏省苏州市吴中区吴中大道 1188 号</el-descriptions-item>
-          </el-descriptions>
           <el-form label-position="left" inline class="table-expand">
 
 
