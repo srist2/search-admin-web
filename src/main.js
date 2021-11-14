@@ -12,6 +12,15 @@ import * as echarts from 'echarts';
 Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false
 
+// 成功信息提示
+Vue.prototype.msgSuccess = function (msg) {
+  this.$message({ showClose: true, message: msg, type: "success" });
+}
+// 失败信息提示
+Vue.prototype.msgError = function (msg) {
+  this.$message({ showClose: true, message: msg, type: "error" });
+}
+
 Vue.use(ElementUI);
 
 /* eslint-disable no-new */

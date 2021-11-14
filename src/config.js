@@ -31,6 +31,19 @@ const config = {
     updateUserStatus: `${host}/user/updateStatus`,
     // 查询失踪者列表
     findInformationAll: `${host}/information/findAll`,
+    // 添加失踪者信息
+    addInformation: `${host}/information/add`,
+    // 更新失踪者信息
+    updateInformation: `${host}/information/update`,
+    // 删除失踪者信息
+    deleteInformation: `${host}/information/delete`,
+    // 是否发布失踪者信息
+    isShowInformation: `${host}/information/isShowInfo`,
+
+    // 查询失踪类型字典
+    findMissTypeDict: `${host}/dict/missType`,
+    // 查询寻找类型字典
+    findSeekTypeDict: `${host}/dict/seekType`,
 
     // 加载本地静态文件
     static: {
