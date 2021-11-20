@@ -2,12 +2,9 @@
   <el-container>
     <div class="header-box">
       <breadcrumb/>
-      <el-button class="btn-add" type="primary" icon="el-icon-edit" size="medium" @click="showUpdateModal()">添加
-      </el-button>
+      <el-button class="btn-add" type="primary" icon="el-icon-edit" size="medium" @click="showUpdateModal()">添加</el-button>
     </div>
-    <el-table
-      :data="tableData"
-      style="width: 100%">
+    <el-table :data="tableData" style="width: 100%">
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-descriptions title="失踪者信息" border :column="4">
@@ -23,7 +20,7 @@
             <el-descriptions-item label="相貌特征及身世描述" :span="2">{{props.row.infoDescribe}}</el-descriptions-item>
             <el-descriptions-item label="失踪者照片/近照" :span="4">
               <el-empty :image="props.row.infoAvatar" style="width: 190px; height: 190px;" description="description">
-                <template slot="description" >
+                <template slot="description">
                   <span>{{props.row.infoAvatar ? '' : '暂无上传'}}</span>
                 </template>
               </el-empty>
@@ -40,12 +37,9 @@
           </el-descriptions>
         </template>
       </el-table-column>
-      <el-table-column label="寻人信息编号" prop="infoId">
-      </el-table-column>
-      <el-table-column label="失踪者姓名" prop="infoName">
-      </el-table-column>
-      <el-table-column label="相貌特征及身世描述" prop="infoDescribe">
-      </el-table-column>
+      <el-table-column label="寻人信息编号" prop="infoId"/>
+      <el-table-column label="失踪者姓名" prop="infoName"/>
+      <el-table-column label="相貌特征及身世描述" prop="infoDescribe"/>
       <el-table-column label="联系人姓名">
         <template slot-scope="scope">{{scope.row.contactPerson.ctName}}</template>
       </el-table-column>
@@ -179,14 +173,14 @@
   import modalBase from "../../components/modal/base";
   import ImgUpload from "../../components/ImgUpload";
   import modalCommon from "../../components/modal/common";
-  import {findInformationAll} from '@/api/missInformation';
+  import {findInfoAllByIsShow} from '@/api/missInformation';
   import {findMissDict, findSeekDict} from '@/api/dict';
 
   const config = require('@/config.js')
   let utils = require('@/utils/utils')
 
   export default {
-    name: "missInformation",
+    name: "missInfoShow",
     components: {
       breadcrumb,
       modalBase,
@@ -232,7 +226,7 @@
       },
       // 刷新列表数据
       refresh() {
-        findInformationAll().then(res => {
+        findInfoAllByIsShow().then(res => {
           console.log("res", res);
           if (res.data.status === 200) {
             this.tableData = res.data.data;
@@ -385,7 +379,7 @@
     },
     created() {
       this.init();
-    },
+    }
   }
 </script>
 

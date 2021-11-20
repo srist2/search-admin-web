@@ -42,6 +42,18 @@ export default new Router({
           component: () => import('@/views/manage/missInformation'),
           name: 'missInformation',
           meta: {title: '寻人信息'}
+        },
+        {
+          path: 'missInfoShow',
+          component: () => import('@/views/manage/missInfoShow'),
+          name: 'missInfoShow',
+          meta: {title: '寻人启示'}
+        },
+        {
+          path: 'missClaim',
+          component: () => import('@/views/manage/missClaim'),
+          name: 'missClaim',
+          meta: {title: '寻人寻亲认领'}
         }
       ]
     },

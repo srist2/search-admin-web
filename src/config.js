@@ -39,6 +39,12 @@ const config = {
     deleteInformation: `${host}/information/delete`,
     // 是否发布失踪者信息
     isShowInformation: `${host}/information/isShowInfo`,
+    // 查询发表启示失踪者列表
+    findInfoAllByIsShow: `${host}/information/findAllByIsShow`,
+    // 查询失踪者认领列表
+    findClaim: `${host}/claim/findAll`,
+    // 失踪者认领审核
+    updateIsPass: `${host}/claim/updateIsPass`,
 
     // 查询失踪类型字典
     findMissTypeDict: `${host}/dict/missType`,

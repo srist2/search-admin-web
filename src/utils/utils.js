@@ -139,6 +139,21 @@ function zeroFill(i) {
 }
 
 /**
+ * 失踪者类型转换
+ */
+export function formatTypeByMiss(type, row) {
+  if (type === 'seek') {
+    return seekTypeFormat(row);
+  }
+  if (type === 'miss') {
+    return missTypeFormat(row);
+  }
+  if (type === 'sex') {
+    return genderFormat(row);
+  }
+}
+
+/**
  * 用户类型转换
  */
 let User = {}
@@ -196,6 +211,18 @@ export function missTypeFormat(role) {
       return Dict.MissType.type_5.name;
     case Dict.MissType.type_6.id:
       return Dict.MissType.type_6.name;
+  }
+}
+
+/**
+ * 性别类型转换
+ */
+export function genderFormat(role) {
+  switch (role) {
+    case Dict.Gender.male.id:
+      return Dict.Gender.male.name;
+    case Dict.Gender.female.id:
+      return Dict.Gender.female.name;
   }
 }
 
@@ -269,6 +296,17 @@ Dict.MissType = {
     id: 6,
     name: "其他寻找"
   },
+}
+// 性别类型字典
+Dict.Gender = {
+  male: {
+    id: 1,
+    name: '男'
+  },
+  female: {
+    id: 2,
+    name: '女'
+  }
 }
 // 用户类型参数
 User.Role = {
