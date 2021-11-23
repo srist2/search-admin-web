@@ -4,8 +4,11 @@
       <breadcrumb/>
     </div>
     <el-table
+      class="table"
       :data="tableData"
-      style="width: 100%">
+      style="width: 100%"
+      :row-class-name="tableRowClassName"
+    >
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-descriptions title="失踪者信息" border :column="4">
@@ -59,7 +62,9 @@
       </el-table-column>
       <el-table-column label="操作" width="150">
         <template slot-scope="scope">
-          <el-button @click="showPassModal(scope.row)" type="text" size="small">审核通过</el-button>
+          <div v-if="scope.row.isPass === 1" class="check-success">审核通过</div>
+          <div v-else-if="scope.row.isPass === 2"class="check-file">审核不通过</div>
+          <el-button v-else @click="showPassModal(scope.row)" type="text" size="small">认领审核</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -114,7 +119,9 @@
           confirm: () => {
             let data = {
               claimId: row.claimId,
-              isPass: 1
+              isPass: 1,
+              email: row.email,
+              infoId: row.infoId
             }
             this.reviewSubmit(data);
           },
@@ -149,6 +156,15 @@
         }
         console.log("options", options)
         utils.submit(options);
+      },
+      // 为审核添加背景样式
+      tableRowClassName({row, rowIndex}) {
+        if (row.isPass === 1) {
+          return 'row-success';
+        } else if (row.isPass === 2) {
+          return 'row-file'
+        }
+        return '';
       }
     },
     created() {
@@ -172,5 +188,26 @@
     display: flex;
     flex-direction: column;
     min-height: 760px;
+  }
+
+  .table >>> .row-success {
+    background: #f0f9eb;
+  }
+
+  .table >>> .row-file {
+    background: #ffd8dc;
+  }
+
+  .check-success, .check-file {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .check-success {
+    color: #0cb511;
+  }
+
+  .check-file {
+    color: #c91d1d;
   }
 </style>
