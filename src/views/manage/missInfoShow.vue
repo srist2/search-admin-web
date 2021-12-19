@@ -176,9 +176,6 @@
   import {findInfoAllByIsShow} from '@/api/missInformation';
   import {findMissDict, findSeekDict} from '@/api/dict';
 
-  const config = require('@/config.js')
-  let utils = require('@/utils/utils')
-
   export default {
     name: "missInfoShow",
     components: {
@@ -264,7 +261,7 @@
           isShow: row.infoIsShow
         }
         let options = {
-          url: config.service.isShowInformation,
+          url: this.config.service.isShowInformation,
           data: data,
           success: res => {
             if (res.data.status === 200) {
@@ -281,7 +278,7 @@
             console.warn("res-err", res)
           }
         }
-        utils.submit(options);
+        this.utils.submit(options);
       },
       // 显示更新/添加模态框
       showUpdateModal(row) {
@@ -310,7 +307,7 @@
               contactId: row.contactPerson.contactId
             }
             let options = {
-              url: config.service.deleteInformation,
+              url: this.config.service.deleteInformation,
               data: data,
               success: res => {
                 if (res.data.status === 200) {
@@ -327,7 +324,7 @@
               }
             }
             console.log("options", options)
-            utils.submit(options);
+            this.utils.submit(options);
           }
         }
         this.$refs.modalCommon.show();
@@ -350,7 +347,7 @@
       },
       // 添加/修改
       add() {
-        let url = this.isAdd ? config.service.addInformation : config.service.updateInformation
+        let url = this.isAdd ? this.config.service.addInformation : this.config.service.updateInformation
         let message = this.isAdd ? "添加成功" : "更新成功"
         let options = {
           url: url,
@@ -370,11 +367,11 @@
             console.error(res)
           }
         }
-        utils.submit(options);
+        this.utils.submit(options);
       },
       // 格式转换
       formatType(type, row) {
-        return utils.formatTypeByMiss(type, row);
+        return this.utils.formatTypeByMiss(type, row);
       }
     },
     created() {

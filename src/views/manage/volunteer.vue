@@ -166,9 +166,6 @@
   import addressSelection from "../../components/addressSelection"
   import pagination from "../../components/pagination"
 
-  const config = require('../../config.js')
-  let utils = require('@/utils/utils')
-
   export default {
     name: 'manage',
     components: {
@@ -287,7 +284,7 @@
       init() {
         this.refresh();
         let options = {
-          url: config.service.findRole,
+          url: this.config.service.findRole,
           success: res => {
             if (res.data.status === 200) {
               this.roleList = res.data.data;
@@ -299,17 +296,17 @@
             console.error('res', res)
           }
         }
-        utils.request(options);
+        this.utils.request(options);
       },
       // 重新获取数据刷新列表
       refresh() {
         let options = {
-          url: config.service.findVolunteerList,
+          url: this.config.service.findVolunteerList,
           success: res => {
             if (res.status === 200) {
               for (let i = 0; i < res.data.length; i++) {
-                res.data[i].createTime = utils.formatDate(res.data[i].createTime)
-                res.data[i].updateTime = utils.formatDate(res.data[i].updateTime)
+                res.data[i].createTime = this.utils.formatDate(res.data[i].createTime)
+                res.data[i].updateTime = this.utils.formatDate(res.data[i].updateTime)
               }
               this.tableData = res.data;
             }
@@ -318,7 +315,7 @@
             console.error('res', res)
           }
         }
-        utils.request(options);
+        this.utils.request(options);
       },
       // 自定义列背景色
       columnStyle({row, column, rowIndex, columnIndex}) {
@@ -389,12 +386,12 @@
         switch (formName) {
           case 'updateMessage':
             data = this.updateMessage;
-            url = config.service.updateVolunteerList;
+            url = this.config.service.updateVolunteerList;
             message = '更新成功！';
             break;
           case 'addMessage':
             data = this.addMessage;
-            url = config.service.addVolunteer;
+            url = this.config.service.addVolunteer;
             message = '添加成功！';
             break;
         }
@@ -419,7 +416,7 @@
                 console.warn("res-err", res)
               }
             }
-            utils.submit(options);
+            this.utils.submit(options);
           }
         })
       },
@@ -440,7 +437,7 @@
               userId: index
             }
             let options = {
-              url: config.service.deleteVolunteer,
+              url: this.config.service.deleteVolunteer,
               data: data,
               success: res => {
                 if (res.data.status === 200) {
@@ -456,7 +453,7 @@
                 console.warn("res-err", res)
               }
             }
-            utils.submit(options);
+            this.utils.submit(options);
           }
         }
         this.$refs.modalCommon.show();

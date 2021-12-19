@@ -1,59 +1,34 @@
 <template>
   <el-container>
-    <el-main style="mix-height: 700px;">
-      <el-table :data="listNest(tableData)" :default-sort="{prop: 'date', order: 'ascending'}">
-        <el-table-column prop="date" label="日期" width="140" sortable>
-        </el-table-column>
-        <el-table-column prop="name" label="姓名" width="120">
-        </el-table-column>
-        <el-table-column prop="address" label="地址">
-        </el-table-column>
-        <el-table-column
-          fixed="right"
-          label="操作"
-          width="150">
-          <template slot-scope="scope">
-            <el-popover
-              placement="right"
-              width="600"
-              trigger="click"
-              :visible-arrow="false"
-            >
-              <el-table
-                :show-header="false"
-                :data="showData(scope.row)"
-                border
-                style="width: 600px;"
-                :row-style="rowStyle"
-              >
-                  <el-table-column prop="name" label="姓名"/>
-                  <el-table-column prop="address" label="地址"/>
-                <el-table-column prop="date" label="日期"/>
-              </el-table>
-              <el-button type="text" slot="reference" size="small">查看</el-button>
-            </el-popover>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination
-        layout="sizes, prev, pager, next, jumper"
-        background
-        :total="tableData.length"
-        :current-page="1"
-        :page-size="pageSize"
-        :page-sizes="[10, 20, 30, 40]"
-        @next-click="handleNextClick"
-        @prev-click="handlePrevClick"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
-    </el-main>
+    <div class="box-charts">
+      <div class="box-row">
+        <line-bar/>
+        <pie-rose-type/>
+      </div>
+      <div class="box-row">
+        <sankey-seek/>
+        <sankey-miss/>
+      </div>
+    </div>
   </el-container>
 </template>
 
 <script>
+  import chartsLineBar from '../components/charts/line-bar'
+  import LineBar from "../components/charts/line-bar";
+  import PieRoseType from "../components/charts/pie-roseType";
+  import SankeySeek from "../components/charts/sankey-seek";
+  import SankeyMiss from "../components/charts/sankey-miss";
+
   export default {
     name: 'index',
+    components: {
+      SankeyMiss,
+      SankeySeek,
+      PieRoseType,
+      LineBar,
+      chartsLineBar
+    },
     data() {
       return {
         // 总数据
@@ -133,5 +108,17 @@
 
   .el-aside {
     color: #333;
+  }
+
+  .box-charts {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .box-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
   }
 </style>

@@ -43,8 +43,6 @@
 </template>
 
 <script>
-  const config = require('../../config.js')
-  let utils = require('@/utils/utils')
 
   export default {
     data() {
@@ -56,7 +54,7 @@
     methods: {
       NavList() {
         let options = {
-          url: config.service.findMenu,
+          url: this.config.service.findMenu,
           success: res => {
             if (res.data.status === 200) {
               this.navList = res.data.data.menu;
@@ -66,7 +64,7 @@
             console.error('res', res)
           }
         }
-        utils.request(options);
+        this.utils.request(options);
       }
     },
     created() {

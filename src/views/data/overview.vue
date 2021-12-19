@@ -10,8 +10,6 @@
 <script>
   import 'echarts/map/js/china.js'
   import './vintage.js'
-  // import utils from '@/utils/utils'
-  let utils = require('../../utils/utils')
 
   export default {
     data() {
@@ -69,7 +67,7 @@
     },
     methods: {
       init() {
-        let weight = utils.getWeight(21, 24)
+        let weight = this.utils.getWeight(21, 24)
         this.canvasWidth = weight.width;
         this.canvasHeight = weight.height;
       },

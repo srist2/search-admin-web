@@ -1,5 +1,5 @@
-const config = require('@/config.js')
-let utils = require('@/utils/utils')
+import utils from "../utils/utils";
+import config from "../config"
 
 // 查询用户列表
 export function findInformationAll(query) {

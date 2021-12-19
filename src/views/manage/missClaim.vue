@@ -78,9 +78,6 @@
   import modalCommon from "../../components/modal/common";
   import {findClaim} from '@/api/missInformation';
 
-  const config = require('@/config.js')
-  let utils = require('@/utils/utils')
-
   export default {
     name: "missClaim",
     components: {
@@ -107,7 +104,7 @@
         })
       },
       formatType(type, row) {
-        return utils.formatTypeByMiss(type, row);
+        return this.utils.formatTypeByMiss(type, row);
       },
       showPassModal(row) {
         this.modalData = {
@@ -138,7 +135,7 @@
       },
       reviewSubmit(data) {
         let options = {
-          url: config.service.updateIsPass,
+          url: this.config.service.updateIsPass,
           data: data,
           success: res => {
             if (res.data.status === 200) {
@@ -155,7 +152,7 @@
           }
         }
         console.log("options", options)
-        utils.submit(options);
+        this.utils.submit(options);
       },
       // 为审核添加背景样式
       tableRowClassName({row, rowIndex}) {

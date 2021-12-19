@@ -7,7 +7,7 @@ import * as echart from '../../../node_modules/echarts'
   } else if (typeof exports === 'object' && typeof exports.nodeName !== 'string') {
     // CommonJS
     factory(exports, require('echarts'));
-  } else {
+  } else {chart
     // Browser globals
     factory({}, root.echarts);
   }

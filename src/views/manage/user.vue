@@ -185,9 +185,6 @@
   import addressSelection from "../../components/addressSelection"
   import pagination from "../../components/pagination"
 
-  const config = require('../../config.js')
-  let utils = require('@/utils/utils')
-
   export default {
     components: {
       breadcrumb,
@@ -313,7 +310,7 @@
       // 初始化数据
       init() {
         let options = {
-          url: config.service.findRole,
+          url: this.config.service.findRole,
           success: res => {
             if (res.data.status === 200) {
               this.roleList = res.data.data;
@@ -325,12 +322,12 @@
           }
         }
         this.refresh();
-        utils.request(options);
+        this.utils.request(options);
       },
       // 重新获取数据刷新列表
       refresh() {
         let options = {
-          url: config.service.findUserAll,
+          url: this.config.service.findUserAll,
           success: res => {
             if (res.status === 200) {
               this.tableData = res.data;
@@ -341,11 +338,11 @@
             console.error('res', res)
           }
         }
-        utils.request(options);
+        this.utils.request(options);
       },
       // 用户类型格式化
       formatRole(row, column) {
-        return utils.userRoleFormat(row.role);
+        return this.utils.userRoleFormat(row.role);
       },
       // 详细信息格式转换
       formatChangeDetail(data) {
@@ -370,7 +367,7 @@
           },
           {
             name: "用户类型",
-            amount1: utils.userRoleFormat(data.role),
+            amount1: this.utils.userRoleFormat(data.role),
             amount2: "备注",
             amount3: data.remark
           },
@@ -397,12 +394,12 @@
         switch (formName) {
           case 'updateMessage':
             data = this.updateMessage;
-            url = config.service.updateUser;
+            url = this.config.service.updateUser;
             message = '更新成功！';
             break;
           case 'addMessage':
             data = this.addMessage;
-            url = data.status === 1 ? config.service.addUser : config.service.addVolunteer;
+            url = data.status === 1 ? this.config.service.addUser : this.config.service.addVolunteer;
             message = '添加成功！';
             break;
         }
@@ -428,7 +425,7 @@
                 console.warn("res-err", res)
               }
             }
-            utils.submit(options);
+            this.utils.submit(options);
           }
         })
       },
@@ -449,7 +446,7 @@
               userId: index
             }
             let options = {
-              url: config.service.deleteUser,
+              url: this.config.service.deleteUser,
               data: data,
               success: res => {
                 if (res.data.status === 200) {
@@ -465,7 +462,7 @@
                 console.warn("res-err", res)
               }
             }
-            utils.submit(options);
+            this.utils.submit(options);
           }
         }
         this.$refs.modalCommon.show();
@@ -481,7 +478,7 @@
           status: row.status
         }
         let options = {
-          url: config.service.updateUserStatus,
+          url: this.config.service.updateUserStatus,
           data: data,
           success: res => {
             if (res.data.status === 200) {
@@ -498,7 +495,7 @@
             console.warn("res-err", res)
           }
         }
-        utils.submit(options);
+        this.utils.submit(options);
       },
       // 为禁用用户添加背景样式
       tableRowClassName({row, rowIndex}) {

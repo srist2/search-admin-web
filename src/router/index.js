@@ -71,6 +71,16 @@ export default new Router({
       ]
     },
     {
+      path: '/login',
+      component: () => import('@/views/login'),
+      meta: {title: '登录'}
+    },
+    {
+      path: '/register',
+      component: () => import('@/views/register'),
+      meta: {title: '注冊'}
+    },
+    {
       path: '/test',
       component: () => import('@/views/test'),
       meta: {title: '志愿者信息管理', icon: 'dashboard'}

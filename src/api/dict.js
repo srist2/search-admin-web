@@ -1,5 +1,5 @@
-const config = require('@/config.js')
-let utils = require('@/utils/utils')
+import utils from "../utils/utils";
+import config from "../config"
 
 // 查询失踪类型字典
 export function findMissDict(query) {

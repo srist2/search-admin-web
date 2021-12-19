@@ -10,8 +10,6 @@
 </template>
 
 <script>
-  const config = require('../config.js')
-  let utils = require('@/utils/utils')
 
   export default {
     name: 'addressSelection',
@@ -39,7 +37,7 @@
       // 地址选择
       initDistPicker() {
         let options = {
-          url: config.service.static.districts,
+          url: this.config.service.static.districts,
           success: res => {
             if (res.status === 200) {
               let distData = res.data;
@@ -86,7 +84,7 @@
             console.error('res', res)
           }
         }
-        utils.request(options);
+        this.utils.request(options);
       },
       //选择地区
       handleChange(value) {
