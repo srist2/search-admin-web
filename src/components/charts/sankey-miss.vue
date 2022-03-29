@@ -5,11 +5,97 @@
 <script>
   export default {
     name: "sankey-miss",
+    props: {
+      sankeyList: []
+    },
+    data() {
+      return {
+        links: [
+          {
+            source: '失踪者类型',
+            target: '男性',
+            value: 15
+          },
+          {
+            source: '失踪者类型',
+            target: '女性',
+            value: '202'
+          },
+          {
+            source: '女性',
+            target: '离家出走',
+            value: 8
+          },
+          {
+            source: '女性',
+            target: '失散亲友',
+            value: 3
+          },
+          {
+            source: '女性',
+            target: '送养',
+            value: 3
+          },
+          {
+            source: '女性',
+            target: '遗弃',
+            value: 3
+          },
+          {
+            source: '女性',
+            target: '失散亲友',
+            value: 2
+          },
+          {
+            source: '女性',
+            target: '死亡',
+            value: 1
+          },
+          {
+            source: '男性',
+            target: '离家出走',
+            value: 3
+          },
+          {
+            source: '男性',
+            target: '被拐卖',
+            value: 2
+          },
+          {
+            source: '男性',
+            target: '收养',
+            value: 2
+          },
+          {
+            source: '男性',
+            target: '遗弃',
+            value: 2
+          },
+          {
+            source: '男性',
+            target: '孤儿',
+            value: 2
+          },
+          {
+            source: '男性',
+            target: '不明原因',
+            value: 2
+          },
+          {
+            source: '男性',
+            target: '迷路走失',
+            value: 0
+          },
+        ]
+      }
+    },
     methods: {
       echartsInit() {
+        let links = this.sankeyList
         let option = {
           title: {
-            text: '失踪者类型'
+            text: '失踪者类型',
+            height: 1200
           },
           tooltip: {
             trigger: 'item',
@@ -19,6 +105,8 @@
           series: {
             type: 'sankey',
             layout: 'none',
+            top: 50,
+            left: 20,
             emphasis: {
               focus: 'adjacency'
             },
@@ -63,83 +151,7 @@
                 name: '死亡'
               },
             ],
-            links: [
-              {
-                source: '失踪者类型',
-                target: '男性',
-                value: 15
-              },
-              {
-                source: '失踪者类型',
-                target: '女性',
-                value: 20
-              },
-              {
-                source: '女性',
-                target: '离家出走',
-                value: 8
-              },
-              {
-                source: '女性',
-                target: '失散亲友',
-                value: 3
-              },
-              {
-                source: '女性',
-                target: '送养',
-                value: 3
-              },
-              {
-                source: '女性',
-                target: '遗弃',
-                value: 3
-              },
-              {
-                source: '女性',
-                target: '失散亲友',
-                value: 2
-              },
-              {
-                source: '女性',
-                target: '死亡',
-                value: 1
-              },
-              {
-                source: '男性',
-                target: '离家出走',
-                value: 3
-              },
-              {
-                source: '男性',
-                target: '被拐卖',
-                value: 2
-              },
-              {
-                source: '男性',
-                target: '收养',
-                value: 2
-              },
-              {
-                source: '男性',
-                target: '遗弃',
-                value: 2
-              },
-              {
-                source: '男性',
-                target: '孤儿',
-                value: 2
-              },
-              {
-                source: '男性',
-                target: '不明原因',
-                value: 2
-              },
-              {
-                source: '男性',
-                target: '迷路走失',
-                value: 2
-              },
-            ],
+            links
           }
 
         };
@@ -148,15 +160,17 @@
       }
     },
     mounted() {
-      this.echartsInit();
+      setTimeout(() => {
+        this.echartsInit();
+      }, 1000)
     }
   }
 </script>
 
 <style scoped>
   #sankey-miss {
-    width: 650px;
-    height: 550px;
+    width: 950px;
+    height: 400px;
   }
 
 </style>

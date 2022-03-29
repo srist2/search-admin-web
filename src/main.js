@@ -10,6 +10,9 @@ import './plugins/axios'
 import * as echarts from 'echarts';
 import utils from './utils/utils.js'
 import config from './config'
+// 控制路由表的js文件
+import '@/permission.js'
+
 // 挂载echarts
 Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false

@@ -1,6 +1,7 @@
 <template>
   <div class="modal-backdrop" v-show="sShow" @click="handleBack">
     <div class="modal" @click.stop="() => {}">
+      <div class="close"><i @click="hide()" class="el-icon-close"/></div>
       <slot></slot>
     </div>
   </div>
@@ -12,7 +13,7 @@
     components: {},
     data() {
       return {
-        sShow: false
+        sShow: false,
       }
     },
     props: {
@@ -26,7 +27,7 @@
         this.sShow = false;
       },
       handleBack() {
-        this.hide();
+        // this.hide();
       }
     }
   };
@@ -47,6 +48,7 @@
   }
 
   .modal {
+    /*width: 70%;*/
     background-color: #fff;
     box-shadow: 2px 2px 20px 1px;
     overflow-x: auto;
@@ -56,5 +58,12 @@
     align-items: center;
     border-radius: 16px;
     z-index: 2002;
+    position: relative;
+  }
+
+  .close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
   }
 </style>

@@ -3,10 +3,24 @@
 </template>
 
 <script>
+  import {getDateStructure} from '@/api/index'
+
   export default {
     name: "pie-roseType",
+    props: {
+      pieRoseDate: {}
+    },
+    data() {
+      return {
+
+      }
+    },
     methods: {
       echartsInit() {
+        // if (this.pieRoseDate.adminNumber) {
+        //   console.log('this.pieRoseDate.adminNumber22',this.pieRoseDate)
+        // }
+        console.log('pieRoseDate', this.pieRoseDate)
         let option = {
           legend: {
             top: 'bottom'
@@ -28,21 +42,21 @@
             {
               name: '网站用户类型',
               type: 'pie',
-              radius: [50, 150],
+              radius: [50, 100],
               center: ['50%', '50%'],
               roseType: 'area',
               itemStyle: {
                 borderRadius: 8
               },
+              label: {
+                show: false
+              },
               data: [
-                { value: 40, name: '注册用户' },
-                { value: 38, name: '志愿者' },
-                { value: 32, name: '认领人' },
-                { value: 30, name: '联系人' },
-                { value: 15, name: '管理员' }
-                // { value: 26, name: 'rose 6' },
-                // { value: 22, name: 'rose 7' },
-                // { value: 18, name: 'rose 8' }
+                { value: this.pieRoseDate.generalUserNumber, name: '注册用户' },
+                { value: this.pieRoseDate.volunteerNumber, name: '志愿者' },
+                { value: this.pieRoseDate.claimNumber, name: '认领人' },
+                { value: this.pieRoseDate.contactNumber, name: '联系人' },
+                { value: this.pieRoseDate.adminNumber, name: '管理员' }
               ]
             }
           ]
@@ -51,8 +65,20 @@
         this.$echarts.init(main).setOption(option);
       }
     },
+    created() {
+      // getDateStructure()
+      //   .then(res => {
+      //     res = res.data
+      //     console.log('res',res)
+      //     if (res.status == 200) {
+      //       this.pieRoseDate = res.data
+      //     }
+      //   })
+    },
     mounted() {
-      this.echartsInit();
+      setTimeout(() => {
+        this.echartsInit();
+      }, 500)
     }
   }
 </script>
@@ -60,8 +86,8 @@
 <style scoped>
 
   #pie-roseType {
-    width: 550px;
-    height: 550px;
+    width: 300px;
+    height: 300px;
   }
 
 </style>

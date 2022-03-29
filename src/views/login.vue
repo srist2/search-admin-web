@@ -2,7 +2,6 @@
   <div class="login">
     <div class="background">
       <el-col class="main" :xs="24" :sm="14" :md="14" :lg="8" :xl="8">
-        <!--        <img src="../assets/logo.jpg" class="logo"/>-->
         <h3>全国寻人信息管理系统</h3>
         <br/>
         <el-form>
@@ -29,9 +28,9 @@
           </el-form-item>
           <el-form-item>
             <div class="register">
-              <router-link to="/register">注册用户</router-link>
+              <router-link :to="{path: '/register'}">注册用户</router-link>
               <!--              <a href="/register"></a>-->
-              <a href="#">忘记密码</a>
+              <router-link :to="{path: '/reset'}">忘记密码</router-link>
             </div>
           </el-form-item>
         </el-form>
@@ -54,16 +53,24 @@
     methods: {
       login() {
         if (this.formLogin.userName.length <= 0 || this.formLogin.password.length <= 0) {
-          alert('请登录！')
+          this.$message({
+            message: "请登录",
+            type: 'warning'
+          })
         } else {
           let options = {
             url: this.config.service.userLogin,
             data: this.formLogin,
             success: res => {
+              console.log("res", res)
               res = res.data
               if (res.status === 200) {
+                // 保存token信息
+                localStorage.setItem("token",res.data.token)
+                localStorage.setItem("username",res.data.userName)
+                localStorage.setItem("userRole",res.data.role)
                 this.$message({
-                  message: res.data,
+                  message: "登录成功",
                   type: 'success'
                 })
                 this.$router.push({path: '/'});
@@ -80,6 +87,9 @@
           }
           this.utils.submit(options);
         }
+      },
+      register() {
+        console.log("xxx")
       }
     }
   }

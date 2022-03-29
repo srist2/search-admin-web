@@ -5,8 +5,14 @@
     </div>
     <div class="register">
       <h3>用户注册</h3>
-      <el-form :model="formDate" ref="formRegister" class="form-box" label-position="left"
-               label-width="80px">
+      <el-form
+        :model="formDate"
+        ref="formDate"
+        class="form-box"
+        label-position="left"
+        label-width="80px"
+        :rules="rules"
+      >
         <div class="form-item">
           <div class="form-item-left">
             <el-form-item label="用户名" prop="userName">
@@ -65,8 +71,8 @@
           </div>
         </div>
         <div class="form-row-btn">
-          <el-button type="primary" @click="submitForm('formRegister')">提交</el-button>
-          <el-button @click="resetForm('formRegister')">重置</el-button>
+          <el-button type="primary" @click="submitForm('formDate')">提交</el-button>
+          <el-button @click="resetForm('formDate')">重置</el-button>
         </div>
       </el-form>
     </div>
@@ -82,6 +88,27 @@
       addressSelection
     },
     data() {
+      // 密码验证
+      let validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'));
+        } else {
+          if (this.formDate.checkPassword !== '') {
+            this.$refs.formDate.validateField('checkPassword');
+          }
+          callback();
+        }
+      };
+      // 二次密码验证
+      let validatePassCheck = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.formDate.password) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      }
       return {
         formDate: {
           userId: '',
@@ -102,7 +129,45 @@
           zipCode: '',
           profession: '',
         },
-        roleList: []
+        roleList: [],
+        rules: {
+          userName: [
+            {required: true, message: '请输入用户名', trigger: 'blur'},
+            {min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur'}
+          ],
+          nickName: [
+            {required: true, message: '请输入姓名', trigger: 'blur'},
+            {min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur'}
+          ],
+          password: [
+            {required: true, validator: validatePass, trigger: 'blur'}
+          ],
+          checkPassword: [
+            {required: true, validator: validatePassCheck, trigger: 'blur'}
+          ],
+          phone: [
+            {required: true, message: '请输入电话号码', trigger: 'change'},
+            {
+              pattern: /^1(3[0-9]|4[01456879]|5[0-35-9]|6[2567]|7[0-8]|8[0-9]|9[0-35-9])\d{8}$/,
+              message: '请输入正确电话号码',
+              trigger: 'blur'
+            },
+          ],
+          idCard: [
+            {required: true, message: '请输入身份证号码', trigger: 'change'},
+            {pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/, message: '请输入正确身份证号码', trigger: 'blur'},
+          ],
+          email: [
+            {type: 'email', required: true, message: '请输入电子邮箱', trigger: 'change'},
+            {pattern: /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/, message: '请输入正确电子邮箱格式', trigger: 'blur'},
+          ],
+          role: [
+            {required: true, message: '请选择一个用户类型', trigger: 'change'}
+          ],
+          residentLocation: [
+            {required: true, message: '请选择常驻地址', trigger: 'change'}
+          ]
+        },
       }
     },
     methods: {

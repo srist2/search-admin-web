@@ -5,6 +5,7 @@
       <el-button class="btn-add" type="primary" icon="el-icon-edit" size="medium" @click="addVolunteer()">添加</el-button>
       <!-- 添加模态框 -->
       <modal-base ref="modalBaseAdd">
+        <h2>志愿者信息添加</h2>
         <el-form :model="addMessage" ref="addMessage" class="form-box" label-position="left" :rules="rules"
                  label-width="80px">
           <div class="form-item">
@@ -104,6 +105,7 @@
     <pagination v-show="total>0" :total="total" :page.sync="pageNum" :limit.sync="pageSize" />
     <!-- 更新模态框 -->
     <modal-base ref="modalBaseUpdate">
+      <h2>志愿者信息修改</h2>
       <el-form :model="updateMessage" ref="updateMessage" class="form-box" label-position="left" :rules="rules"
                label-width="80px">
         <div class="form-item">
@@ -309,6 +311,7 @@
                 res.data[i].updateTime = this.utils.formatDate(res.data[i].updateTime)
               }
               this.tableData = res.data;
+              this.total = this.tableData.length;
             }
           },
           fail: res => {
@@ -441,7 +444,7 @@
               data: data,
               success: res => {
                 if (res.data.status === 200) {
-                  this.$refs.modalCommon.close();
+                  this.$refs.modalCommon.hide();
                   this.request();
                   this.$message({
                     message: '删除成功！',

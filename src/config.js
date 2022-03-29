@@ -33,6 +33,10 @@ const config = {
     userLogin: `${host}/admin/login`,
     // 用户注册
     userRegister: `${host}/admin/register`,
+    // 用户注销
+    userLoginOut: `${host}/admin/loginOut`,
+    // 用户重置密码
+    resetPassword: `${host}/admin/resetPassword`,
     // 查询失踪者列表
     findInformationAll: `${host}/information/findAll`,
     // 添加失踪者信息
@@ -54,10 +58,18 @@ const config = {
     findMissTypeDict: `${host}/dict/missType`,
     // 查询寻找类型字典
     findSeekTypeDict: `${host}/dict/seekType`,
+    // 用户结构
+    getUserStructure: `${host}/date/getUserStructure`,
     // 加载本地静态文件
     static: {
       districts: `${localhost}/static/jsc-json/districts.json`
     }
+  },
+  global: {
+    // 全局路由
+    antRouter: '',
+    //
+    addRouFlag: false
   }
 }
 module.exports = config

@@ -1,13 +1,25 @@
 <template>
   <el-container>
     <div class="box-charts">
-      <div class="box-row">
-        <line-bar/>
-        <pie-rose-type/>
+      <h1>寻人信息展示</h1>
+      <div class="left-box">
+<!--        <div class="left-item">-->
+<!--          <districtMap/>-->
+<!--        </div>-->
+        <div class="left-item">
+          <sankey-miss :sankeyList="structureList.sankeyList"/>
+        </div>
       </div>
-      <div class="box-row">
-        <sankey-seek/>
-        <sankey-miss/>
+      <div class="right-box">
+        <h3>系统用户结构</h3>
+        <div class="right-item">
+          <pie-rose-type ref="pieRoseType" :pieRoseDate="structureList.pieRoseDate"/>
+        </div>
+<!--        <h3>失踪者登记人数</h3>-->
+        <div class="right-item">
+          <sankey-seek :sankeyList="structureList.seekList"/>
+<!--          <line-bar/>-->
+        </div>
       </div>
     </div>
   </el-container>
@@ -19,6 +31,10 @@
   import PieRoseType from "../components/charts/pie-roseType";
   import SankeySeek from "../components/charts/sankey-seek";
   import SankeyMiss from "../components/charts/sankey-miss";
+  import districtMap from "../components/charts/districtMap";
+
+  import {getDateStructure} from '@/api/index'
+  import {findMissDict} from '@/api/dict'
 
   export default {
     name: 'index',
@@ -27,75 +43,85 @@
       SankeySeek,
       PieRoseType,
       LineBar,
-      chartsLineBar
+      chartsLineBar,
+      districtMap
     },
     data() {
       return {
-        // 总数据
-        tableData: [],
-        // 默认显示第几页
-        currentPage: 1,
-        // 总条数
-        totalCount: 0,
-        // 个数选择器
-        pageSizes: [10, 20, 30],
-        // 默认每页显示的条数
-        pageSize: 10,
-        uerName: '王小虎'
+        structureList: {
+          pieRoseDate: {},
+          sankeyList: [],
+          seekList: []
+        },
+        missTypeList: [],
+        seekType: ['家寻亲人','亲人寻家','寻找朋友','寻找同学','寻找战友','其他寻找']
       }
     },
     methods: {
-      getData() {
-        for (let i = 0; i < 20; i++) {
-          this.tableData[i] = {
-            date: '2016-05-02',
-            name: '王小虎',
-            address: `上海市普陀区金沙江路 ${1518 + i} 弄`
+      // 统计数量
+      missTypeSum(missType, sexType) {
+        let temp = []
+        // 去重
+        let text = this.utils.timeRepet(missType)
+        let source = sexType ? '男性' : '女性'
+        text.map((item) => {
+          if (item.name) {
+            let name = this.utils.missTypeFormat(parseInt(item.name))
+            temp.push({target: name, value: item.num, source: source})
+          }
+        })
+        return temp
+      },
+      // 寻找类型数据
+      seekTypeSum(missType) {
+        let temp = []
+        let text = this.utils.timeRepet(missType)
+        text.map((item) => {
+          if (item.name) {
+            let name = this.utils.seekTypeFormat(parseInt(item.name))
+            temp.push({target: name, value: item.num})
+          }
+        })
+        let seekList = []
+        let seekType = this.seekType
+        for (let i = 0; i< seekType.length; i++) {
+          temp.map((item) => {
+            if (item.target == seekType[i]) {
+              seekList[i] = item.value
+            }
+          })
+        }
+        for(let i = 0; i< seekList.length; i++) {
+          if (!seekList[i]) {
+            seekList[i] = 0
           }
         }
-        this.totalCount = this.tableData.length;
-      },
-      handleCommand(command) {
-        if (command === 'set') {
-          this.$router.push({path: '/test'})
-        }
-      },
-      listNest(tableData) {
-        return tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
-      },
-      // 下一页
-      handleNextClick() {
-        this.currentPage++;
-      },
-      // 上一页
-      handlePrevClick() {
-        this.currentPage--;
-      },
-      // 每页显示的条数
-      handleSizeChange(val) {
-        // 改变每页显示的条数
-        this.pageSize = val
-        // 注意：在改变每页显示的条数时，要将页码显示到第一页
-        this.currentPage = 1
-      },
-      // 显示第几页
-      handleCurrentChange(val) {
-        // 改变默认的页数
-        this.currentPage = val
-      },
-      showData(data) {
-        return [data]
-      },
-      rowStyle({row, rowIndex}) {
-        if (rowIndex == 0) {
-          return "background:#f3f6fc;";
-        } else {
-          return "background:#ffffff;";
-        }
+        return seekList
       }
     },
     created() {
-      this.getData();
+      getDateStructure()
+      .then(res => {
+        res = res.data
+        console.log('res', res)
+        if (res.status == 200) {
+          let list = []
+          // 饼图数据
+          this.structureList.pieRoseDate = res.data
+          // 桑葚图数据
+          let manList = this.missTypeSum(res.data.missManTypeLists, true)
+          let womanList = this.missTypeSum(res.data.missWomanTypeLists, false)
+          manList = manList.concat(womanList)
+          list.push({source: '失踪者类型', target: '男性', value: res.data.missManNumber})
+          list.push({source: '失踪者类型', target: '女性', value: res.data.missWomanNumber})
+          list = list.concat(manList)
+          this.structureList.sankeyList = list
+
+          let seekList = this.seekTypeSum(res.data.seekTypeLists)
+          this.structureList.seekList = seekList
+          console.log('seekList', seekList)
+        }
+      })
     }
   };
 </script>
@@ -111,9 +137,38 @@
   }
 
   .box-charts {
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: relative;
+  }
+
+  .right-item, .left-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .left-box {
+    width: 1000px;
+    height: 700px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .right-box {
+    width: 400px;
+    height: 700px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px #b8b8b8 solid;
+    position: absolute;
+    top: 20px;
+    right: 50px;
+    box-shadow: 4px 4px 8px 12px #b8b8b8;
   }
 
   .box-row {

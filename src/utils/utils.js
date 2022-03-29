@@ -1,4 +1,5 @@
-import axios from 'axios'
+import axios from '../plugins/axios'
+import ro from "element-ui/src/locale/lang/ro";
 
 
 let utils = {
@@ -66,6 +67,18 @@ let utils = {
       .catch((error) => {
         options.fail({data: error});
       })
+  },
+
+  submitAPI(options) {
+    return new Promise((resolve, reject) => {
+      axios.post(options.url, options.data)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
   },
 
   /**
@@ -160,6 +173,7 @@ let utils = {
    */
 
   userRoleFormat(role) {
+    role = typeof(role) === "number" ? role : parseInt(role)
     switch (role) {
       case User.Role.user.id:
         return User.Role.user.name;
@@ -187,12 +201,6 @@ let utils = {
         return Dict.SeekType.type_5.name;
       case Dict.SeekType.type_6.id:
         return Dict.SeekType.type_6.name;
-      case Dict.SeekType.type_7.id:
-        return Dict.SeekType.type_7.name;
-      case Dict.SeekType.type_8.id:
-        return Dict.SeekType.type_9.name;
-      case Dict.SeekType.type_10.id:
-        return Dict.SeekType.type_10.name;
     }
   },
 
@@ -213,6 +221,14 @@ let utils = {
         return Dict.MissType.type_5.name;
       case Dict.MissType.type_6.id:
         return Dict.MissType.type_6.name;
+      case Dict.MissType.type_7.id:
+        return Dict.MissType.type_7.name;
+      case Dict.MissType.type_8.id:
+        return Dict.MissType.type_8.name;
+      case Dict.MissType.type_9.id:
+        return Dict.MissType.type_9.name;
+      case Dict.MissType.type_10.id:
+        return Dict.MissType.type_10.name;
     }
   },
 
@@ -226,6 +242,47 @@ let utils = {
       case Dict.Gender.female.id:
         return Dict.Gender.female.name;
     }
+  },
+
+  //获取对象数组元素重复出现次数
+  timeRepet(arr) {
+    let newArr = [...new Set(arr.map(i => i.missName))]; // 去重的时候需要注意和普通数组不同
+    let list = [];
+    newArr.forEach(i => {
+      list.push(arr.filter(t => t.missName === i));
+    });
+    let mlist = [];
+    list.forEach((i, index) => {
+      mlist.push({
+        name: newArr[index],
+        num: i.length,
+      });
+    });
+    return mlist;
+  },
+  getCount(arr, rank,ranktype){
+    var obj = {}, k, arr1 = [];
+    for (var i = 0, len = arr.length; i < len; i++) {
+      k = arr[i];
+      if (obj[k])
+        obj[k]++;
+      else
+        obj[k] = 1;
+    }
+    //保存结果{el-'元素'，count-出现次数}
+    for (var o in obj) {
+      arr1.push({el: o, count: obj[o]});
+    }
+    //排序（降序）
+    arr1.sort(function (n1, n2) {
+      return n2.count - n1.count
+    });
+    //如果ranktype为1，则为升序，反转数组
+    if(ranktype===1){
+      arr1=arr1.reverse();
+    }
+    var rank1 = rank || arr1.length;
+    return arr1.slice(0,rank1);
   }
 }
 
@@ -235,6 +292,33 @@ let Dict = {}
 let User = {}
 // 寻找类型字典
 Dict.SeekType = {
+  type_1: {
+    id: 1,
+    name: "家寻亲人"
+  },
+  type_2: {
+    id: 2,
+    name: "亲人寻家"
+  },
+  type_3: {
+    id: 3,
+    name: "寻找朋友"
+  },
+  type_4: {
+    id: 4,
+    name: "寻找同学"
+  },
+  type_5: {
+    id: 5,
+    name: "寻找战友"
+  },
+  type_6: {
+    id: 6,
+    name: "其他寻找"
+  },
+}
+// 失踪类型字典
+Dict.MissType = {
   type_1: {
     id: 1,
     name: "失散亲友"
@@ -274,33 +358,6 @@ Dict.SeekType = {
   type_10: {
     id: 10,
     name: "死亡"
-  },
-}
-// 失踪类型字典
-Dict.MissType = {
-  type_1: {
-    id: 1,
-    name: "家寻亲人"
-  },
-  type_2: {
-    id: 2,
-    name: "亲人寻家"
-  },
-  type_3: {
-    id: 3,
-    name: "寻找朋友"
-  },
-  type_4: {
-    id: 4,
-    name: "寻找同学"
-  },
-  type_5: {
-    id: 5,
-    name: "寻找战友"
-  },
-  type_6: {
-    id: 6,
-    name: "其他寻找"
   },
 }
 // 性别类型字典

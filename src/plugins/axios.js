@@ -1,61 +1,37 @@
 "use strict";
 
-import Vue from 'vue';
 import axios from "axios";
-
-// Full config:  https://github.com/axios/axios#request-config
-// axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
-// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 let config = {
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
-  // timeout: 60 * 1000, // Timeout
+  timeout: 15000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
 };
 
 const _axios = axios.create(config);
 
-_axios.interceptors.request.use(
-  function(config) {
-    // Do something before request is sent
+// request 拦截器
+//挂载请求拦截器 (相当于请求的预验证，请求到达服务器之前先验证这次请求)
+_axios.interceptors.request.use(config => {
+    //为请求头添加对象，添加token验证的Authorization字段
+    // if(store.state.token){//添加token信息在请求中
+    //   config.headers.Authorization = store.state.token
+    // }
     return config;
   },
-  function(error) {
-    // Do something with request error
+  error => {
     return Promise.reject(error);
   }
 );
 
-// Add a response interceptor
-_axios.interceptors.response.use(
-  function(response) {
-    // Do something with response data
+// response 响应拦截器
+_axios.interceptors.response.use(response => {
+    const code = response.status;
     return response;
   },
-  function(error) {
-    // Do something with response error
+  (error) => {
     return Promise.reject(error);
   }
 );
 
-Plugin.install = function(Vue) {
-  Vue.axios = _axios;
-  window.axios = _axios;
-  Object.defineProperties(Vue.prototype, {
-    axios: {
-      get() {
-        return _axios;
-      }
-    },
-    $axios: {
-      get() {
-        return _axios;
-      }
-    },
-  });
-};
-
-Vue.use(Plugin)
-
-export default Plugin;
+export default _axios;

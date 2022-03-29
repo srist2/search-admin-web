@@ -6,7 +6,7 @@
       </el-button>
     </div>
     <el-table
-      :data="tableData"
+      :data="tableData.slice((pageNum-1)*pageSize,pageNum*pageSize)"
       style="width: 100%">
       <el-table-column type="expand">
         <template slot-scope="props">
@@ -14,20 +14,22 @@
             <el-descriptions-item label="编号">{{props.row.infoId}}</el-descriptions-item>
             <el-descriptions-item label="姓名" :span="2">{{props.row.infoName}}</el-descriptions-item>
             <el-descriptions-item label="性别">{{formatType('sex', props.row.infoSex)}}</el-descriptions-item>
+            <el-descriptions-item label="失踪时身高">{{props.row.infoMissHigh}}</el-descriptions-item>
             <el-descriptions-item label="籍贯" :span="2">{{props.row.infoHometown}}</el-descriptions-item>
             <el-descriptions-item label="寻找类型">{{formatType('seek', props.row.infoSeekType)}}</el-descriptions-item>
             <el-descriptions-item label="失踪类型">{{formatType('miss', props.row.infoMissType)}}</el-descriptions-item>
             <el-descriptions-item label="出生日期">{{props.row.infoDateBirth}}</el-descriptions-item>
             <el-descriptions-item label="失踪日期">{{props.row.infoDateMiss}}</el-descriptions-item>
-            <el-descriptions-item label="失踪时身高" :span="2">{{props.row.infoMissHigh}}</el-descriptions-item>
-            <el-descriptions-item label="相貌特征及身世描述" :span="2">{{props.row.infoDescribe}}</el-descriptions-item>
-            <el-descriptions-item label="失踪者照片/近照" :span="4">
-              <el-empty :image="props.row.infoAvatar" style="width: 190px; height: 190px;" description="description">
-                <template slot="description" >
+            <el-descriptions-item label="失踪地点">{{props.row.infoMissPlace}}</el-descriptions-item>
+            <el-descriptions-item label="相貌特征及身世描述" :span="4">{{props.row.infoDescribe}}</el-descriptions-item>
+            <el-descriptions-item label="失踪者照片/近照" :span="1">
+              <el-empty :image="props.row.infoAvatar" style="padding: 0;" description="description">
+                <template slot="description">
                   <span>{{props.row.infoAvatar ? '' : '暂无上传'}}</span>
                 </template>
               </el-empty>
             </el-descriptions-item>
+            <el-descriptions-item label="" :span="2"/>
           </el-descriptions>
           <el-descriptions title="联系人信息" border class="dec-content" :column="4">
             <el-descriptions-item label="编号">{{props.row.contactPerson.contactId}}</el-descriptions-item>
@@ -45,6 +47,7 @@
       <el-table-column label="失踪者姓名" prop="infoName">
       </el-table-column>
       <el-table-column label="相貌特征及身世描述" prop="infoDescribe">
+        <template slot-scope="scope">{{interceptDescription(scope.row.infoDescribe)}}</template>
       </el-table-column>
       <el-table-column label="联系人姓名">
         <template slot-scope="scope">{{scope.row.contactPerson.ctName}}</template>
@@ -69,108 +72,148 @@
       </el-table-column>
     </el-table>
     <!-- 更新模态框 -->
-    <modal-base ref="modalBaseUpdate">
-      <el-form :model="form" ref="form" class="form-box" label-position="left"
-               label-width="120px">
-        <div class="form-item-title">失踪者信息</div>
-        <div class="form-item">
-          <div class="form-item-left">
-            <el-form-item label="姓名" prop="infoName">
-              <el-input v-model="form.infoName"/>
-            </el-form-item>
-            <el-form-item label="性别" prop="infoSex">
-              <el-select v-model="form.infoSex" placeholder="请选择">
-                <el-option
-                  v-for="item in sexDictList"
-                  :key="item.dict_id"
-                  :label="item.dict_name"
-                  :value="item.dict_id"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="籍贯" prop="infoHometown">
-              <el-input v-model="form.infoHometown"/>
-            </el-form-item>
-            <el-form-item label="失踪时身高" prop="infoMissHigh">
-              <el-input v-model="form.infoMissHigh"/>
-            </el-form-item>
-            <el-form-item label="相貌特征及身世描述" prop="infoDescribe">
-              <el-input v-model="form.infoDescribe"/>
-            </el-form-item>
-          </div>
-          <div class="form-item-right">
-            <el-form-item label="寻找类型" prop="infoSeekType">
-              <el-select v-model="form.infoSeekType" placeholder="请选择">
-                <el-option
-                  v-for="item in seekTypeList"
-                  :key="item.dict_id"
-                  :label="item.dict_name"
-                  :value="item.dict_id"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="失踪类型" prop="infoMissType">
-              <el-select v-model="form.infoMissType" placeholder="请选择">
-                <el-option
-                  v-for="item in missTypeList"
-                  :key="item.dict_id"
-                  :label="item.dict_name"
-                  :value="item.dict_id"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="出生日期" prop="infoDateBirth">
-              <el-date-picker
-                v-model="form.infoDateBirth"
-                value-format="yyyy-MM-dd"
-                type="date"
-                placeholder="选择日期"/>
-            </el-form-item>
-            <el-form-item label="失踪日期" prop="infoDateMiss">
-              <el-date-picker
-                v-model="form.infoDateMiss"
-                value-format="yyyy-MM-dd"
-                type="date"
-                placeholder="选择日期"/>
-            </el-form-item>
-            <el-form-item label="上传头像" prop="infoAvatar">
-              <ImgUpload ref="imgUpload" :imgUrl.sync="imageUrl"/>
-            </el-form-item>
-          </div>
-        </div>
-        <div class="form-item-title">联系人信息</div>
-        <div class="form-item">
-          <div class="form-item-left">
-            <el-form-item label="姓名">
-              <el-input v-model="form.contactPerson.ctName"/>
-            </el-form-item>
-            <el-form-item label="电子邮箱">
-              <el-input v-model="form.contactPerson.ctEmail"/>
-            </el-form-item>
-            <el-form-item label="邮政编码">
-              <el-input v-model="form.contactPerson.ctZipCode"/>
-            </el-form-item>
-          </div>
-          <div class="form-item-right">
-            <el-form-item label="电话">
-              <el-input v-model="form.contactPerson.ctPhone"/>
-            </el-form-item>
-            <el-form-item label="联系地址">
-              <el-input v-model="form.contactPerson.ctAddress"/>
-            </el-form-item>
-            <el-form-item label="备注">
-              <el-input v-model="form.contactPerson.ctRemark"/>
-            </el-form-item>
-          </div>
-        </div>
+    <modal-base ref="modalBaseUpdate" style="overflow: auto; overflow: auto;">
+      <h2>{{title}}</h2>
+      <el-form :model="form" ref="form" class="form-box" label-width="110px" :rules="rules">
         <div class="form-row-btn">
           <el-button type="primary" @click="submitForm('form')">提交</el-button>
           <el-button @click="resetForm('form')">重置</el-button>
         </div>
+        <el-tabs v-model="missName" type="border-card">
+          <el-tab-pane label="失踪者信息" name="first">
+            <div class="box_content">
+              <el-col :span="8">
+                <el-form-item label="姓名" prop="infoName">
+                  <el-input v-model="form.infoName"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="性别" prop="infoSex">
+                  <el-select v-model="form.infoSex" placeholder="请选择">
+                    <el-option
+                      v-for="item in sexDictList"
+                      :key="item.dict_id"
+                      :label="item.dict_name"
+                      :value="item.dict_id"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="籍贯" prop="infoHometown">
+                  <el-input v-model="form.infoHometown"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="失踪时身高" prop="infoMissHigh">
+                  <el-input v-model="form.infoMissHigh"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="失踪地点" prop="infoMissPlace">
+                  <el-input v-model="form.infoMissPlace"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="寻找类型" prop="infoSeekType">
+                  <el-select v-model="form.infoSeekType" placeholder="请选择">
+                    <el-option
+                      v-for="item in seekTypeList"
+                      :key="item.dict_id"
+                      :label="item.dict_name"
+                      :value="item.dict_id"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="失踪类型" prop="infoMissType">
+                  <el-select v-model="form.infoMissType" placeholder="请选择">
+                    <el-option
+                      v-for="item in missTypeList"
+                      :key="item.dict_id"
+                      :label="item.dict_name"
+                      :value="item.dict_id"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="出生日期" prop="infoDateBirth">
+                  <el-date-picker
+                    v-model="form.infoDateBirth"
+                    value-format="yyyy-MM-dd"
+                    type="date"
+                    placeholder="选择日期"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="失踪日期" prop="infoDateMiss">
+                  <el-date-picker
+                    v-model="form.infoDateMiss"
+                    value-format="yyyy-MM-dd"
+                    type="date"
+                    placeholder="选择日期"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="上传头像" prop="infoAvatar">
+                  <ImgUpload ref="imgUpload" :imgUrl.sync="imageUrl"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item label="相貌特征及身世描述" prop="infoDescribe">
+                  <el-input type="textarea" v-model="form.infoDescribe"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+
+              </el-col>
+            </div>
+
+          </el-tab-pane>
+          <el-tab-pane label="联系人信息" name="claim">
+            <div class="box_content">
+              <el-col :span="8">
+                <el-form-item label="姓名">
+                  <el-input v-model="form.contactPerson.ctName"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="电子邮箱">
+                  <el-input v-model="form.contactPerson.ctEmail"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="邮政编码">
+                  <el-input v-model="form.contactPerson.ctZipCode"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="电话">
+                  <el-input v-model="form.contactPerson.ctPhone"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="联系地址">
+                  <el-input v-model="form.contactPerson.ctAddress"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="备注">
+                  <el-input v-model="form.contactPerson.ctRemark"/>
+                </el-form-item>
+              </el-col>
+            </div>
+
+          </el-tab-pane>
+        </el-tabs>
       </el-form>
     </modal-base>
     <!-- 删除模态框 -->
     <modal-common ref="modalCommon" :modalData="modalDelete"/>
+    <!-- 分页 -->
+    <pagination v-show="total>0" :total="total" :page.sync="pageNum" :limit.sync="pageSize"/>
   </el-container>
 </template>
 
@@ -179,6 +222,7 @@
   import modalBase from "../../components/modal/base";
   import ImgUpload from "../../components/ImgUpload";
   import modalCommon from "../../components/modal/common";
+  import pagination from "../../components/pagination"
   import {findInformationAll} from '@/api/missInformation';
   import {findMissDict, findSeekDict} from '@/api/dict';
 
@@ -188,7 +232,8 @@
       breadcrumb,
       modalBase,
       ImgUpload,
-      modalCommon
+      modalCommon,
+      pagination
     },
     data() {
       return {
@@ -211,7 +256,37 @@
           }
         ],
         isAdd: false,
-        modalDelete: {}
+        modalDelete: {},
+        rules: {
+          infoName: [
+            {required: true, message: '请输入姓名', trigger: 'blur'},
+            {min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur'}
+          ],
+          infoSex: [
+            {required: true, message: '请选择性别', trigger: 'blur'},
+          ],
+          infoSeekType: [
+            {required: true, message: '请选择寻找类型', trigger: 'blur'},
+          ],
+          infoMissType: [
+            {required: true, message: '请选择失踪类型', trigger: 'blur'},
+          ],
+          infoHometown: [
+            {required: true, message: '请输入籍贯', trigger: 'blur'},
+          ],
+          infoDateBirth: [
+            {required: true, message: '请选择出生日期', trigger: 'blur'},
+          ],
+          infoDateMiss: [
+            {required: true, message: '请选择失踪日期', trigger: 'blur'},
+          ],
+        },
+        // 分页信息
+        total: 0,
+        pageNum: 1,
+        pageSize: 10,
+        missName: 'first',
+        title: ''
       }
     },
     methods: {
@@ -230,9 +305,9 @@
       // 刷新列表数据
       refresh() {
         findInformationAll().then(res => {
-          console.log("res", res);
           if (res.data.status === 200) {
             this.tableData = res.data.data;
+            this.total = this.tableData.length;
           }
         })
       },
@@ -249,6 +324,7 @@
           infoDateMiss: '',
           infoMissHigh: '',
           infoDescribe: '',
+          infoAvatar: '',
           contactPerson: {
             contactId: '',
             ctName: '',
@@ -272,7 +348,7 @@
           success: res => {
             if (res.data.status === 200) {
               this.$message({
-                message: '修改成功！',
+                message: '发表启事状态修改成功！',
                 type: 'success'
               });
             } else {
@@ -292,7 +368,9 @@
         if (!!row) {
           // row是Object对象类型，如果直接赋值的话，就变成了浅拷贝，复制的是地址，导致在表单中改变值的时候table中的数据也跟着改变，所以要进行深拷贝。
           this.form = JSON.parse(JSON.stringify(row));
+          this.title = '失踪者信息修改'
         } else {
+          this.title = '失踪者信息添加'
           this.$refs['form'].resetFields();
           this.reset();
           this.isAdd = true;
@@ -317,7 +395,7 @@
               data: data,
               success: res => {
                 if (res.data.status === 200) {
-                  this.$refs.modalCommon.close();
+                  this.$refs.modalCommon.hide();
                   this.refresh();
                   this.$message({
                     message: '删除成功！',
@@ -341,20 +419,17 @@
           if (valid) {
             this.$refs.imgUpload.submit();
             setTimeout(() => {
-              this.form.infoAvatar = this.imageUrl;
+              // this.form.infoAvatar = this.imageUrl;
               this.add();
             }, 300)
           }
         })
       },
-      // 重置表单
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
-      },
       // 添加/修改
       add() {
         let url = this.isAdd ? this.config.service.addInformation : this.config.service.updateInformation
         let message = this.isAdd ? "添加成功" : "更新成功"
+        this.form.infoAvatar = this.isAdd ? this.imageUrl : this.form.infoAvatar
         let options = {
           url: url,
           data: this.form,
@@ -373,12 +448,24 @@
             console.error(res)
           }
         }
+        console.log("submitOption", options)
         this.utils.submit(options);
+      },
+      // 重置表单
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
       },
       // 格式转换
       formatType(type, row) {
         return this.utils.formatTypeByMiss(type, row);
-      }
+      },
+      // 设置显示字数
+      interceptDescription(item) {
+        if (!item) {
+          return '';
+        }
+        return `${item.slice(0, 25)}...`;
+      },
     },
     created() {
       this.init();
@@ -416,48 +503,30 @@
   }
 
   .form-box {
-    margin: 40px 50px;
+    width: 900px;
+    height: 550px;
+    padding: 0 40px;
+    margin-bottom: 40px;
+  }
+
+  .box_content {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .form-item-title {
-    margin-bottom: 20px;
-    font-size: 18px;
-  }
-
-  .form-item {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-
-  .form-item-left, .form-item-right {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .form-item-left {
-    padding-right: 20px;
-  }
-
-  .form-row {
-    display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
   }
 
   .form-row-btn {
     display: flex;
     flex-direction: row;
-    justify-content: center;
-    margin-top: 10px;
-    margin-bottom: -20px;
+    justify-content: left;
+    margin-bottom: 10px;
   }
 
   .form-row-btn .el-button {
     margin: 0 10px;
+  }
+
+  .el-select, .el-date-editor {
+    width: 100%;
   }
 </style>

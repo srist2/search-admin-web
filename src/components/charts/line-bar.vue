@@ -8,9 +8,9 @@
     methods: {
       echartsInit() {
         let option = {
-          title: {
-            text: '登记失踪/发表启示统计'
-          },
+          // title: {
+          //   text: '登记失踪/发表启示统计'
+          // },
           tooltip: {
             trigger: 'axis',
             axisPointer: {
@@ -90,7 +90,7 @@
 
 <style scoped>
   #line-bar {
-    width: 650px;
-    height: 450px;
+    width: 350px;
+    height: 300px;
   }
 </style>

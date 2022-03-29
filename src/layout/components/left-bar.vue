@@ -4,40 +4,33 @@
       <el-menu-item index="/">
         <template slot="title"><i class="el-icon-s-home"/>首页</template>
       </el-menu-item>
-<!--      <el-submenu index="2">-->
-<!--        <template slot="title"><i class="el-icon-tickets"></i>失踪者管理</template>-->
-<!--        <el-menu-item-group>-->
-<!--          <el-menu-item index="2-1">寻人信息</el-menu-item>-->
-<!--          <el-menu-item index="2-2">寻人启事</el-menu-item>-->
-<!--          <el-menu-item index="2-3">寻人寻亲认领</el-menu-item>-->
-<!--        </el-menu-item-group>-->
-<!--      </el-submenu>-->
-<!--      <el-submenu index="3">-->
-<!--        <template slot="title"><i class="el-icon-s-custom"></i>志愿者管理</template>-->
-<!--        <el-menu-item-group>-->
-<!--          <el-menu-item index="/volunteer/manage">志愿者信息</el-menu-item>-->
-<!--        </el-menu-item-group>-->
-<!--      </el-submenu>-->
-<!--      <el-submenu index="4">-->
-<!--        <template slot="title"><i class="el-icon-s-data"></i>数据展示</template>-->
-<!--        <el-menu-item-group>-->
-<!--          <el-menu-item index="/data/overview">数据总览</el-menu-item>-->
-<!--        </el-menu-item-group>-->
-<!--      </el-submenu>-->
-      <el-submenu
-        v-for="(item,index) in navList" :key='index'
-        :index="index.toString()"
-      >
-        <template slot="title"><i :class="item.icon"/>{{item.name}}</template>
-        <el-menu-item-group v-if="item.childrens.length > 0">
+      <el-submenu v-for="(item,index) in meuns" :key='index' :index="index.toString()">
+        <template slot="title"><i :class="item.meta.icon"/>{{item.meta.title}}</template>
+<!--        <div>{{item.children}}</div>-->
+        <el-menu-item-group v-if="item.children">
           <el-menu-item
-            v-for="(item,index) in item.childrens":key='index'
-            :index="item.url"
+            v-for="(item2,index) in item.children" :key='index'
+            :index="item.path + '/' + item2.path"
           >
-            {{item.name}}
+            {{item2.meta.title}}
           </el-menu-item>
         </el-menu-item-group>
       </el-submenu>
+
+<!--      <el-submenu-->
+<!--        v-for="(item,index) in navList" :key='index'-->
+<!--        :index="index.toString()"-->
+<!--      >-->
+<!--        <template slot="title"><i :class="item.icon"/>{{item.name}}</template>-->
+<!--        <el-menu-item-group v-if="item.childrens.length > 0">-->
+<!--          <el-menu-item-->
+<!--            v-for="(item,index) in item.childrens":key='index'-->
+<!--            :index="item.url"-->
+<!--          >-->
+<!--            {{item.name}}-->
+<!--          </el-menu-item>-->
+<!--        </el-menu-item-group>-->
+<!--      </el-submenu>-->
     </el-menu>
   </div>
 </template>
@@ -49,6 +42,7 @@
       return {
         navList: {},
         defaultActive: this.$route.path,
+        meuns: []
       }
     },
     methods: {
@@ -68,7 +62,9 @@
       }
     },
     created() {
-      this.NavList();
+      // this.NavList();
+      this.meuns = this.config.global.antRouter
+      console.log("antRouter", this.config.global.antRouter)
     }
   };
 </script>

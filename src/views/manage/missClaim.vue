@@ -5,7 +5,7 @@
     </div>
     <el-table
       class="table"
-      :data="tableData"
+      :data="tableData.slice((pageNum-1)*pageSize,pageNum*pageSize)"
       style="width: 100%"
       :row-class-name="tableRowClassName"
     >
@@ -68,6 +68,8 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <pagination v-show="total>0" :total="total" :page.sync="pageNum" :limit.sync="pageSize" />
     <!-- 提示模态框 -->
     <modal-common ref="modalCommon" :modalData="modalData"/>
   </el-container>
@@ -75,20 +77,26 @@
 
 <script>
   import breadcrumb from "../../components/breadcrumb";
-  import modalCommon from "../../components/modal/common";
+  import modalCommon from "../../components/modal/common"
+  import pagination from "../../components/pagination"
   import {findClaim} from '@/api/missInformation';
 
   export default {
     name: "missClaim",
     components: {
       breadcrumb,
-      modalCommon
+      modalCommon,
+      pagination
     },
     data() {
       return {
         tableData: [],
         infoData: {},
-        modalData: {}
+        modalData: {},
+        // 分页信息
+        total: 0,
+        pageNum: 1,
+        pageSize: 10,
       }
     },
     methods: {
@@ -97,9 +105,9 @@
       },
       refresh() {
         findClaim().then(res => {
-          console.log("res", res);
           if (res.data.status === 200) {
             this.tableData = res.data.data;
+            this.total = this.tableData.length
           }
         })
       },
@@ -121,14 +129,17 @@
               infoId: row.infoId
             }
             this.reviewSubmit(data);
+            this.$refs.modalCommon.hide();
           },
           close: () => {
             let data = {
               claimId: row.claimId,
+              email: row.email,
+              infoId: row.infoId,
               isPass: 2
             }
-            console.log("Data",data)
             this.reviewSubmit(data);
+            this.$refs.modalCommon.hide();
           }
         }
         this.$refs.modalCommon.show();

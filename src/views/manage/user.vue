@@ -5,6 +5,7 @@
       <el-button class="btn-add" type="primary" icon="el-icon-edit" size="medium" @click="addUser()">添加</el-button>
       <!-- 添加模态框 -->
       <modal-base ref="modalBaseAdd">
+        <h2>用户信息添加</h2>
         <el-form :model="addMessage" ref="addMessage" class="form-box" label-position="left" :rules="rules"
                  label-width="80px">
           <div class="form-item">
@@ -112,9 +113,11 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 分页 -->
     <pagination v-show="total>0" :total="total" :page.sync="pageNum" :limit.sync="pageSize" />
     <!-- 更新模态框 -->
     <modal-base ref="modalBaseUpdate">
+      <h2>用户信息修改</h2>
       <el-form
         :model="updateMessage"
         ref="updateMessage"
@@ -314,7 +317,6 @@
           success: res => {
             if (res.data.status === 200) {
               this.roleList = res.data.data;
-              this.roleList[2].disable = true;
             }
           },
           fail: res => {
@@ -419,7 +421,7 @@
                 } else {
                   this.$message.error('修改失败');
                 }
-                this.request();
+                this.refresh();
               },
               fail: res => {
                 console.warn("res-err", res)
@@ -483,7 +485,7 @@
           success: res => {
             if (res.data.status === 200) {
               this.$message({
-                message: '修改成功！',
+                message: '用户状态修改成功！',
                 type: 'success'
               });
             } else {

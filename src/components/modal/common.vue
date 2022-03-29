@@ -39,7 +39,11 @@
         this.modalData.confirm();
       },
       close() {
-        this.modalData.close();
+        if (!this.modalData.close) {
+          this.$refs.modalBaseCommon.hide();
+        } else {
+          this.modalData.close();
+        }
       },
       show() {
         this.$refs.modalBaseCommon.show();
