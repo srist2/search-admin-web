@@ -128,8 +128,7 @@
 
 <style>
   .el-header {
-    background-color: #B3C0D1;
-    color: #333;
+    color: #fff;
   }
 
   .el-aside {

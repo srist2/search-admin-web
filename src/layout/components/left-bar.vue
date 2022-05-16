@@ -6,7 +6,6 @@
       </el-menu-item>
       <el-submenu v-for="(item,index) in meuns" :key='index' :index="index.toString()">
         <template slot="title"><i :class="item.meta.icon"/>{{item.meta.title}}</template>
-<!--        <div>{{item.children}}</div>-->
         <el-menu-item-group v-if="item.children">
           <el-menu-item
             v-for="(item2,index) in item.children" :key='index'
@@ -16,21 +15,6 @@
           </el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-
-<!--      <el-submenu-->
-<!--        v-for="(item,index) in navList" :key='index'-->
-<!--        :index="index.toString()"-->
-<!--      >-->
-<!--        <template slot="title"><i :class="item.icon"/>{{item.name}}</template>-->
-<!--        <el-menu-item-group v-if="item.childrens.length > 0">-->
-<!--          <el-menu-item-->
-<!--            v-for="(item,index) in item.childrens":key='index'-->
-<!--            :index="item.url"-->
-<!--          >-->
-<!--            {{item.name}}-->
-<!--          </el-menu-item>-->
-<!--        </el-menu-item-group>-->
-<!--      </el-submenu>-->
     </el-menu>
   </div>
 </template>
@@ -73,5 +57,6 @@
   .left-bar {
     background-color: rgb(238, 241, 246);
     height: 700px;
+    overflow-x: hidden;
   }
 </style>

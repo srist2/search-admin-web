@@ -2,8 +2,42 @@
   <el-container>
     <div class="header-box">
       <breadcrumb/>
-      <el-button class="btn-add" type="primary" icon="el-icon-edit" size="medium" @click="showUpdateModal()">添加
-      </el-button>
+      <!-- 查询条件 -->
+      <el-form :model="queryParams" ref="queryForm" :inline="true" style="padding-top: 20px;">
+        <el-form-item label="失踪者姓名" prop="infoName">
+          <el-input
+            v-model="queryParams.infoName"
+            placeholder="请输入失踪者姓名"
+            clearable
+            size="small"
+            style="width: 240px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="是否发表启事" prop="infoIsShow">
+          <el-select
+            v-model="queryParams.infoIsShow"
+            placeholder="审核类型"
+            size="small"
+            clearable
+            style="width: 100px"
+            class="cus-select"
+          >
+            <el-option
+              v-for="dept in infoIsShowOptions"
+              :key="dept.value"
+              :label="dept.label"
+              :value="dept.value"
+              style="text-align: center;"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+      <el-button class="btn-add" type="primary" icon="el-icon-edit" size="medium" @click="showUpdateModal()">添加</el-button>
     </div>
     <el-table
       :data="tableData.slice((pageNum-1)*pageSize,pageNum*pageSize)"
@@ -223,7 +257,7 @@
   import ImgUpload from "../../components/ImgUpload";
   import modalCommon from "../../components/modal/common";
   import pagination from "../../components/pagination"
-  import {findInformationAll} from '@/api/missInformation';
+  import {findInformationAll, findAllByInfoName} from '@/api/missInformation';
   import {findMissDict, findSeekDict} from '@/api/dict';
 
   export default {
@@ -286,7 +320,22 @@
         pageNum: 1,
         pageSize: 10,
         missName: 'first',
-        title: ''
+        title: '',
+        // 查询参数
+        queryParams: {
+          infoName: '',
+          infoIsShow: 2
+        },
+        infoIsShowOptions: [
+          {
+            label: '是',
+            value: 1
+          },
+          {
+            label: '否',
+            value: 2
+          }
+        ]
       }
     },
     methods: {
@@ -465,6 +514,18 @@
           return '';
         }
         return `${item.slice(0, 25)}...`;
+      },
+      // 搜索按钮操作
+      handleQuery() {
+        findAllByInfoName(this.queryParams).then((res) => {
+          this.tableData = res.data.data;
+          this.total = res.data.data.length
+        })
+      },
+      // 重置按钮操作
+      resetQuery() {
+        this.$refs['queryForm'].resetFields();
+        this.refresh();
       },
     },
     created() {

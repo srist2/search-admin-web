@@ -2,16 +2,51 @@
   <el-container>
     <div class="header-box">
       <breadcrumb/>
+      <!-- 查询条件 -->
+      <el-form :model="queryParams" ref="queryForm" :inline="true" style="padding-top: 20px;">
+        <el-form-item label="认领人姓名" prop="claimName">
+          <el-input
+            v-model="queryParams.claimName"
+            placeholder="请输入认领人姓名"
+            clearable
+            size="small"
+            style="width: 240px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="审核类型" prop="isPass">
+          <el-select
+            v-model="queryParams.isPass"
+            placeholder="审核类型"
+            size="small"
+            clearable
+            style="width: 99%;"
+            class="cus-select"
+          >
+            <el-option
+              v-for="dept in isPassOptions"
+              :key="dept.value"
+              :label="dept.label"
+              :value="dept.value"
+              style="text-align: center;"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
     </div>
     <el-table
       class="table"
       :data="tableData.slice((pageNum-1)*pageSize,pageNum*pageSize)"
-      style="width: 100%"
+      style="width: 100%;"
       :row-class-name="tableRowClassName"
     >
       <el-table-column type="expand">
         <template slot-scope="props">
-          <el-descriptions title="失踪者信息" border :column="4">
+          <el-descriptions title="失踪者信息" border :column="4" style="padding: 20px;">
             <el-descriptions-item label="编号">{{props.row.infoAndContactVo.infoId}}</el-descriptions-item>
             <el-descriptions-item label="姓名" :span="2">{{props.row.infoAndContactVo.infoName}}</el-descriptions-item>
             <el-descriptions-item label="性别">{{formatType('sex', props.row.infoAndContactVo.infoSex)}}</el-descriptions-item>
@@ -30,7 +65,7 @@
               </el-empty>
             </el-descriptions-item>
           </el-descriptions>
-          <el-descriptions title="联系人信息" border class="dec-content" :column="4">
+          <el-descriptions title="联系人信息" border class="dec-content" :column="4" style="padding: 20px;">
             <el-descriptions-item label="编号">{{props.row.infoAndContactVo.contactPerson.contactId}}</el-descriptions-item>
             <el-descriptions-item label="姓名">{{props.row.infoAndContactVo.contactPerson.ctName}}</el-descriptions-item>
             <el-descriptions-item label="电话">{{props.row.infoAndContactVo.contactPerson.ctPhone}}</el-descriptions-item>
@@ -39,7 +74,7 @@
             <el-descriptions-item label="邮政编码">{{props.row.infoAndContactVo.contactPerson.ctZipCode}}</el-descriptions-item>
             <el-descriptions-item label="备注">{{props.row.infoAndContactVo.contactPerson.ctRemark}}</el-descriptions-item>
           </el-descriptions>
-          <el-descriptions title="认领人信息" border class="dec-content" :column="4">
+          <el-descriptions title="认领人信息" border class="dec-content" :column="4" style="padding: 20px;">
             <el-descriptions-item label="编号">{{props.row.claimId}}</el-descriptions-item>
             <el-descriptions-item label="姓名">{{props.row.claimName}}</el-descriptions-item>
             <el-descriptions-item label="电话">{{props.row.phone}}</el-descriptions-item>
@@ -60,6 +95,7 @@
           <p>{{scope.row.infoAndContactVo.contactPerson.ctName}}</p>
         </template>
       </el-table-column>
+      <el-table-column label="申请时间" prop="createTime"/>
       <el-table-column label="操作" width="150">
         <template slot-scope="scope">
           <div v-if="scope.row.isPass === 1" class="check-success">审核通过</div>
@@ -79,7 +115,7 @@
   import breadcrumb from "../../components/breadcrumb";
   import modalCommon from "../../components/modal/common"
   import pagination from "../../components/pagination"
-  import {findClaim} from '@/api/missInformation';
+  import {findClaim, findAllByClaimName} from '@/api/missInformation';
 
   export default {
     name: "missClaim",
@@ -97,6 +133,26 @@
         total: 0,
         pageNum: 1,
         pageSize: 10,
+        // 查询参数
+        queryParams: {
+          claimName: '',
+          isPass: 0
+        },
+        // 审核字典
+        isPassOptions: [
+          {
+            label: '待审核',
+            value: 0
+          },
+          {
+            label: '通过',
+            value: 1
+          },
+          {
+            label: '不通过',
+            value: 2
+          }
+        ]
       }
     },
     methods: {
@@ -106,7 +162,12 @@
       refresh() {
         findClaim().then(res => {
           if (res.data.status === 200) {
-            this.tableData = res.data.data;
+            let list = res.data.data.sort((a, b) => {
+              //正序a-b
+              return new Date(b.createTime) - new Date(a.createTime)
+            });
+            console.log('list', list)
+            this.tableData = list;
             this.total = this.tableData.length
           }
         })
@@ -173,7 +234,19 @@
           return 'row-file'
         }
         return '';
-      }
+      },
+      // 搜索按钮操作
+      handleQuery() {
+        findAllByClaimName(this.queryParams).then((res) => {
+          this.tableData = res.data.data;
+          this.total = res.data.data.length
+        })
+      },
+      // 重置按钮操作
+      resetQuery() {
+        this.$refs['queryForm'].resetFields();
+        this.refresh();
+      },
     },
     created() {
       this.init();

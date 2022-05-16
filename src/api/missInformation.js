@@ -22,3 +22,21 @@ export function findClaim(query) {
   }
   return utils.requestAPI(options)
 }
+
+// 条件查询
+export function findAllByClaimName(query) {
+  let options = {
+    url: config.service.findByClaim,
+    data: query
+  }
+  return utils.submitAPI(options)
+}
+
+// 条件查询
+export function findAllByInfoName(query) {
+  let options = {
+    url: config.service.findAllByInfoName,
+    data: query
+  }
+  return utils.submitAPI(options)
+}

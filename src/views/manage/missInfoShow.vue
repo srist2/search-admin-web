@@ -2,6 +2,22 @@
   <el-container>
     <div class="header-box">
       <breadcrumb/>
+      <el-form :model="queryParams" ref="queryForm" :inline="true" style="padding-top: 20px;">
+        <el-form-item label="失踪者姓名" prop="infoName">
+          <el-input
+            v-model="queryParams.infoName"
+            placeholder="请输入失踪者姓名"
+            clearable
+            size="small"
+            style="width: 240px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
       <el-button class="btn-add" type="primary" icon="el-icon-edit" size="medium" @click="showUpdateModal()">添加
       </el-button>
     </div>
@@ -206,7 +222,7 @@
   import ImgUpload from "../../components/ImgUpload";
   import modalCommon from "../../components/modal/common";
   import pagination from "../../components/pagination"
-  import {findInfoAllByIsShow} from '@/api/missInformation';
+  import {findInfoAllByIsShow, findAllByInfoName} from '@/api/missInformation';
   import {findMissDict, findSeekDict} from '@/api/dict';
 
   export default {
@@ -244,7 +260,11 @@
         total: 0,
         pageNum: 1,
         pageSize: 10,
-        missName: 'first'
+        missName: 'first',
+        // 查询参数
+        queryParams: {
+          infoName: ''
+        },
       }
     },
     methods: {
@@ -419,6 +439,18 @@
           return '';
         }
         return `${item.slice(0, 25)}...`;
+      },
+      // 搜索按钮操作
+      handleQuery() {
+        findAllByInfoName(this.queryParams).then((res) => {
+          this.tableData = res.data.data;
+          this.total = res.data.data.length
+        })
+      },
+      // 重置按钮操作
+      resetQuery() {
+        this.$refs['queryForm'].resetFields();
+        this.refresh();
       },
     },
     created() {

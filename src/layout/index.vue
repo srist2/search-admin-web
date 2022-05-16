@@ -44,11 +44,10 @@
   .el-header {
     background-color: rgba(32, 73, 105, 0.8);
     opacity: 95%;
-    color: #000;
+    color: #fff;
   }
 
   .app-main {
     background-color: rgba(255, 247, 247, 0.4);
   }
 </style>
-s

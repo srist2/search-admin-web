@@ -66,4 +66,7 @@
     background-color: rgb(238, 241, 246);
     height: 700px;
   }
+  .el-dropdown-link {
+    color: #fff;
+  }
 </style>
